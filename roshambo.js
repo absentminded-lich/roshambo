@@ -2,7 +2,7 @@
 function getComputerChoice() {
     return Math.floor(Math.random() * 3);
 }
-
+// return user input
 function getPlayerChoice() {
     return prompt("Rock, Scissors, or Paper?");
 }
@@ -19,7 +19,7 @@ function getIntChoice(strChoice) {
         case 'rock': 
             return 2;
         default:
-            return undefined;
+            return strChoice;
     }
 }
 // return int corresponding string
@@ -55,10 +55,13 @@ function game() {
             if (playerSelection === null) return; // Cancel
 
             playerSelection = getIntChoice(playerSelection);
-            if (playerSelection !== undefined) break;
+            if (!isNaN(playerSelection)) break;
+            console.log(`${playerSelection} is not a valid choice!`);
         }
         // computer "input"
         computerSelection = getComputerChoice();
+
+        console.log(playRound(playerSelection, computerSelection));
     }
 }
 
