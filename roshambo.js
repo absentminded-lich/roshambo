@@ -2,6 +2,10 @@
 function getComputerChoice() {
     return Math.floor(Math.random() * 3);
 }
+
+function getPlayerChoice() {
+    return prompt("Rock, Scissors, or Paper?");
+}
 // return string corresponding int
 function getIntChoice(strChoice) {
     switch(strChoice.toLowerCase()) {
@@ -40,8 +44,22 @@ function playRound(playerSelection, computerSelection) {
         return 'You Lose! ' + getStrChoice(computerSelection) + ' beats ' + getStrChoice(playerSelection);
     }
 }
+// game loop
+function game() {
+    let playerSelection, computerSelection;
 
-let playerSelection = 0; // rock
-let computerSelection = getComputerChoice();
+    for (let i = 0; i < 5; i++) {
+        // player input
+        while (true) {
+            playerSelection = getPlayerChoice();
+            if (playerSelection === null) return; // Cancel
 
-console.log(playRound(playerSelection, computerSelection));
+            playerSelection = getIntChoice(playerSelection);
+            if (playerSelection !== undefined) break;
+        }
+        // computer "input"
+        computerSelection = getComputerChoice();
+    }
+}
+
+game();
