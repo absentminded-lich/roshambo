@@ -1,67 +1,73 @@
-// return rand int between 1 and 3
-function getComputerChoice() {
-    return Math.floor(Math.random() * 3);
+// return a random int between 0 and maxRange
+function getEnemyChoice(maxRange = 3) {
+    return Math.floor(Math.random() * maxRange);
 }
-// return user input
-function getPlayerChoice() {
-    return prompt("Rock, Scissors, or Paper?");
-}
-// return string corresponding int
-function getIntChoice(strChoice) {
-    switch(strChoice.toLowerCase()) {
-        case 'p':
-        case 'paper':
-            return 0;
-        case 's':
-        case 'scissors':
-            return 1;
-        case 'r':
-        case 'rock': 
-            return 2;
-        default:
-            return strChoice;
+// prompt the player for maxRounds and return that value
+function getMaxRounds(msg, initVal = 5) {
+    let maxRounds;
+
+    while (true) {
+        maxRounds = prompt(msg, initVal);
+        if (maxRounds === null) return null;
+        if (!isNaN(maxRounds)) {
+            if(maxRounds <= 0) continue;
+            return maxRounds;
+        }
     }
 }
-// return int corresponding string
-function getStrChoice(intChoice) {
-    switch(intChoice) {
-        case 0: return 'Paper';
-        case 1: return 'Scissors';
-        case 2: return 'Rock';
-        default: return undefined;
-    }
-}
-// process outcome and return as string message
-function playRound(playerSelection, computerSelection) {
-    if (playerSelection === computerSelection) {
-        // player ties
-        return 'A Tie! An interesting declaration beats this generic one.';
-    } else if (playerSelection > computerSelection || (playerSelection === 2 && computerSelection == 0)) {
-        // player wins
-        return 'You Win! ' + getStrChoice(playerSelection) + ' beats ' + getStrChoice(computerSelection);
-    } else {
-        // player loses
-        return 'You Lose! ' + getStrChoice(computerSelection) + ' beats ' + getStrChoice(playerSelection);
+// prompt the player for a specific value and return that value
+function getPlayerChoice(msg, choices) {
+    let playerChoice;
+
+    while (true) {
+        playerChoice = prompt(msg);
+        if (playerChoice === null) return null;
+        let test = choices.findIndex(n => n.toLowerCase() === playerChoice.toLowerCase() || n.charAt(0).toLowerCase() == playerChoice.toLowerCase());
+        if (test !== -1) return test;
     }
 }
 // game loop
 function game() {
-    let playerSelection, computerSelection;
+    let playerChoice, enemyChoice;
+    let playerWins = 0;
+    let enemyWins = 0;
 
-    for (let i = 0; i < 5; i++) {
+    const choices = ['Rock', 'Paper', 'Scissors'];
+
+    let maxRounds = getMaxRounds("Best out of?");
+    if (maxRounds === null) return; // cancel
+
+    let roundsToWin = Math.ceil((maxRounds / 2) + 0.01);
+
+    for (let round = 1; round <= maxRounds; round++) {
         // player input
-        while (true) {
-            playerSelection = getPlayerChoice();
-            if (playerSelection === null) return; // Cancel
-
-            playerSelection = getIntChoice(playerSelection);
-            if (!isNaN(playerSelection)) break;
-            console.log(`${playerSelection} is not a valid choice!`);
-        }
+        playerChoice = getPlayerChoice(`[R]ock, [P]aper, or [S]cissors? (Round ${round} of ${maxRounds})`, choices);
+        if (playerChoice === null) return; // cancel
         // computer "input"
-        computerSelection = getComputerChoice();
+        enemyChoice = getEnemyChoice(choices.length);
 
-        console.log(playRound(playerSelection, computerSelection));
+        if (playerChoice === enemyChoice) {
+            // player ties round
+            console.log('A Tie! Try again!');
+            round--;
+            continue;
+        } else if (playerChoice > enemyChoice || (playerChoice == 0 && enemyChoice == 2)) {
+            // player wins round
+            console.log(`You Win! ${choices[playerChoice]} beats ${choices[enemyChoice]} [Wins: ${++playerWins}]`);
+            if (playerWins >= roundsToWin) {
+                // player wins game
+                console.log(`Congratulations! You have won ${playerWins} out of ${maxRounds} rounds!`);
+                return;
+            }
+        } else {
+            // player loses round
+            console.log(`You Lose! ${choices[enemyChoice]} beats ${choices[playerChoice]}  [Losses: ${++enemyWins}]`);
+            if (enemyWins >= roundsToWin) {
+                // player loses game
+                console.log(`Defeat! The computer has won ${enemyWins} out of ${maxRounds} rounds!`);
+                return;
+            }
+        }
     }
 }
 
