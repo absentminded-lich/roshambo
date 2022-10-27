@@ -3,9 +3,18 @@
         <meta charset="utf-8">
         <title>Roshambo</title>
 
-        <script src='roshambo.js'></script>
+        <link rel="stylesheet" href="style.css">
+        <script src='roshambo.js' defer></script>
     </head>
     <body>
-        <p>Hit F12... if you feel lucky!</p>
+        <div id="content">
+            <div id="game">
+                <button id="rock">Rock</button>
+                <button id="paper">Paper</button>
+                <button id="scissors">Scissors</button>
+                <div id="output"></div>
+                <div id="score"></div>
+            </div>
+        </div>
     </body>
 </html>
