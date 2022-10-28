@@ -1,3 +1,7 @@
+function endGame() {
+    btns.forEach(btn => btn.classList.add('disable'));
+}
+
 function generateRndVerb(withSpaces = true) {
     const verbs = ['slays', 'beats', 'conquers', 'overpowers', 'destroys', 'overwhelms', 'massacres', 'butchers',
         'zaps', 'erases', 'slaughters', 'kills', 'trounces', 'pulverizes', 'demolishes', 'annihilates', 'obliterates',
@@ -5,8 +9,9 @@ function generateRndVerb(withSpaces = true) {
     return (withSpaces ? ' ' : '') + verbs[Math.floor(Math.random() * verbs.length)].toUpperCase() + (withSpaces ? ' ' : '');
 }
 
-function getCPUSelection(maxRange = 3) {
-    return Math.floor(Math.random() * maxRange);
+function getCPUSelection() {
+    const choices = ['rock', 'paper', 'scissors'];
+    return choices[Math.floor(Math.random() * choices.length)];
 }
 
 function incPlayerScore(inc = 1) {
@@ -20,54 +25,62 @@ function incCPUScore(inc = 1) {
 }
 
 function outMsg(msg) {
-    document.querySelector('#output').textContent = msg;
+    output.textContent = msg;
     console.log(msg);
 }
 
-function playRound(playerChoice) {
-    let playerSelection = choices.findIndex(choice => playerChoice === choice);
-
+function playRound(playerSelection) {
     let cpuSelection = getCPUSelection();
 
     if (playerSelection === cpuSelection) {
         // player ties round
-        outMsg('BALANCED');
-    } else if (playerSelection > cpuSelection || (playerSelection == 0 && cpuSelection == 2)) {
+        outMsg('STALEMATE');
+    } else if ((playerSelection === 'rock' && cpuSelection === 'scissors') ||
+            (playerSelection === 'paper' && cpuSelection === 'rock') ||
+            (playerSelection === 'scissors' && cpuSelection === 'paper')) {
         // player wins round
-        outMsg(choices[playerSelection].toUpperCase() + generateRndVerb() + choices[cpuSelection].toUpperCase());
+        outMsg(playerSelection.toUpperCase() + generateRndVerb() + cpuSelection.toUpperCase());
         incPlayerScore();
-        if (playerScore >= minRounds) {
+        if (playerScore >= roundsToWin) {
             outMsg('VICTORY');
+            endGame();
         }
     } else {
         // player loses round
-        outMsg(choices[cpuSelection].toUpperCase() + generateRndVerb() + choices[playerSelection].toUpperCase());
+        outMsg(cpuSelection.toUpperCase() + generateRndVerb() + playerSelection.toUpperCase());
         incCPUScore();
-        if (cpuScore >= minRounds) {
+        if (cpuScore >= roundsToWin) {
             outMsg('DEFEAT');
+            endGame();
         }
     }
 }
 
 let cpuScore = 0;
-let maxRounds = 9;
 let playerScore = 0;
+let roundsToWin = 5;
 
-const choices = ['rock', 'paper', 'scissors'];
-
-let minRounds = Math.ceil((maxRounds / 2) + 0.01);
+const output = document.querySelector('#output');
+output.addEventListener('transitionend', () => {
+    if (playerScore === roundsToWin || cpuScore === roundsToWin) {
+        output.classList.add("fade-out-long");
+    }
+});
 
 const btns = document.querySelectorAll('button');
 btns.forEach(btn => {
     btn.addEventListener('click', () => playRound(btn.id));
     btn.addEventListener('mousedown', () => {
-        btn.style.background = 'white';
-        btn.style.color = 'black';
+        btn.classList.add('mouse-down');
+        output.classList.remove('fade-in');
+        output.classList.add('reset');
     });
     btn.addEventListener('mouseup', () => {
-        btn.style.background = 'black';
-        btn.style.color = 'white';
+        btn.classList.remove('mouse-down');
+        output.classList.add('fade-in');
+        output.classList.remove('reset');
     });
+    btn.addEventListener('mouseout', () => btn.classList.remove('mouse-down'));
 });
 
 const scores = document.querySelectorAll('.score');

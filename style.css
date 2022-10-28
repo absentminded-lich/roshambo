@@ -1,4 +1,5 @@
 body {
+    font-family: "Roboto", sans-serif;
     margin: 0;
     padding: 0;
     display: flex;
@@ -10,12 +11,32 @@ body {
 button {
     width: 200px;
     height: 160px;
+    padding: 0;
     border: 5px solid white;
     font-size: 20px;
     font-weight: bold;
-    transform: scale(1, 1.25);
     color: white;
     background-color: black;
+    transform: scale(1.00, 1.25);
+    transition: transform 0.2s;
+}
+
+button:hover {
+    transform: scale(1.25, 1.565);
+    transition: transform 0.1s;
+}
+
+button.mouse-down {
+    color: black;
+    background-color: white;
+    transition: color 0.2s;
+    transition: background-color 0.2s;
+}
+
+button.disable {
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 2.0s;
 }
 
 #game {
@@ -38,10 +59,25 @@ button {
     justify-content: center;
     align-items: flex-end;
     padding-bottom: 12px;
-    font-size: 32px;
+    font-size: 28px;
     font-weight: bold;
     color: white;
-    transform: scale(1, 1.25)
+    transform: scale(1, 1.25);
+}
+
+#output.fade-in {
+    opacity: 1;
+    transition: opacity 1.0s
+}
+
+#output.fade-out-long {
+    opacity: 0;
+    transition: opacity 3.0s;
+}
+
+#output.reset {
+    opacity: 0;
+    transition: opacity 0.2s;
 }
 
 .score {
