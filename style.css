@@ -1,3 +1,7 @@
+html {
+    /* Firefox */
+    min-height: 100%;    
+}
 body {
     font-family: "Roboto", sans-serif;
     margin: 0;
@@ -6,6 +10,8 @@ body {
     justify-content: center;
     align-content: stretch;
     background-color: black;
+    /* Firefox */
+    height: 100%;
 }
 
 button {
